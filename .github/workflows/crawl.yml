@@ -55,7 +55,7 @@ jobs:
           PGUSER: postgres
           PGPASSWORD: postgres
           PGDATABASE: crawler
-        run: psql -h localhost -U postgres -d crawler -f sql/setup.sql
+        run: psql -h localhost -U postgres -d crawler -f src/setup.sql
 
       # Step 6: Run crawler
       - name: Run crawler script

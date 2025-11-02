@@ -60,4 +60,4 @@ def export_csv(output_path):
     df = pd.read_sql(query, engine)
     os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
     df.to_csv(output_path, index=False)
-    print(f"📦 CSV exported: {output_path}")
+    print(f" CSV exported: {output_path}")

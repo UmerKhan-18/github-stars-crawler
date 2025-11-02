@@ -9,7 +9,7 @@ if not GITHUB_TOKEN:
 
 HEADERS = {"Authorization": f"Bearer {GITHUB_TOKEN}"}
 
-# GraphQL query with rateLimit info included
+# GraphQL query with rateLimit
 QUERY = """
 query ($cursor: String, $pageSize: Int!) {
   search(query: "stars:>0", type: REPOSITORY, first: $pageSize, after: $cursor) {
@@ -63,7 +63,7 @@ def handle_rate_limit(rate_limit):
         now = datetime.now(timezone.utc)
         wait_seconds = (reset_dt - now).total_seconds() + 5  # small buffer
         if wait_seconds > 0:
-            print(f"⚠️ Rate limit low (remaining={remaining}). Sleeping {int(wait_seconds)}s until reset.")
+            print(f" Rate limit low (remaining={remaining}). Sleeping {int(wait_seconds)}s until reset.")
             time.sleep(wait_seconds)
     else:
         # polite sleep between pages to reduce hitting limits quickly

@@ -1,27 +1,24 @@
-# src/db.py
-from sqlalchemy import create_engine, Column, String, BigInteger, TIMESTAMP, JSON, text
+from sqlalchemy import create_engine, Column, String, BigInteger, TIMESTAMP, JSON
 from sqlalchemy.orm import declarative_base, sessionmaker
-from sqlalchemy.sql import func
 from datetime import datetime
-from src.config import DATABASE_URL
+import os
 
 Base = declarative_base()
 
 class Repo(Base):
     __tablename__ = "repos"
 
-    repo_id = Column(String, primary_key=True)                 # GitHub global node id
-    full_name = Column(String, nullable=False)                 # owner/name
+    repo_id = Column(String, primary_key=True)
+    full_name = Column(String, nullable=False)
     owner = Column(String, nullable=False)
     name = Column(String, nullable=False)
     stargazers_count = Column(BigInteger)
-    last_crawled = Column(TIMESTAMP(timezone=True), server_default=func.now())
-    metadata = Column(JSON, server_default=text("'{}'::jsonb"))
+    last_crawled = Column(TIMESTAMP, default=datetime.utcnow)
+    metadata_json = Column("metadata", JSON, default={})  # ✅ renamed here
 
-# Engine & Session
-engine = create_engine(DATABASE_URL, future=True)
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
+DATABASE_URL = f"postgresql://{os.getenv('PGUSER', 'postgres')}:{os.getenv('PGPASSWORD', 'postgres')}@{os.getenv('PGHOST', 'localhost')}/{os.getenv('PGDATABASE', 'crawler')}"
+engine = create_engine(DATABASE_URL)
+Session = sessionmaker(bind=engine)
 
 def create_schema():
-    """Create DB tables if they don't exist."""
-    Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(engine)

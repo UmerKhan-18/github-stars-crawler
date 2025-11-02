@@ -24,13 +24,16 @@ Data is automatically exported as a **CSV artifact** after every workflow run.
 
 ---
 
-
 ## Architecture
 
 GitHub GraphQL API → Python Crawler (Parallel Threads)
+
 ↓
+
 PostgreSQL (ORM via SQLAlchemy)
+
 ↓
+
 CSV Dump Artifact (Uploaded by GitHub Actions)
 
 ---
@@ -63,12 +66,12 @@ CREATE INDEX IF NOT EXISTS idx_repos_last_crawled ON repos(last_crawled);
 
 ### Responsibilities
 
-- Fetch repository data from **GitHub GraphQL API**  
-- Insert or update rows in **PostgreSQL** using **SQLAlchemy ORM**  
-- Handle **pagination**, **rate limits**, and **retries**  
-- Support **parallel crawling** for faster throughput  
-- Commit data in safe, consistent batches  
-- Export final dataset as a **CSV artifact** after each run  
+- Fetch repository data from **GitHub GraphQL API**
+- Insert or update rows in **PostgreSQL** using **SQLAlchemy ORM**
+- Handle **pagination**, **rate limits**, and **retries**
+- Support **parallel crawling** for faster throughput
+- Commit data in safe, consistent batches
+- Export final dataset as a **CSV artifact** after each run
 
 ---
 
@@ -81,20 +84,20 @@ The entire pipeline runs automatically via the workflow file:
 
 ## Workflow Steps
 
-1. **Checkout the repository**  
-2. **Setup Python environment**  
-3. **Start PostgreSQL service container**  
-4. **Apply database schema (`setup.sql`)**  
-5. **Run the crawler script (`main.py`)**  
-6. **Export database contents to CSV (`repos_dump.csv`)**  
-7. **Upload CSV as an artifact** for later download or inspection  
+1. **Checkout the repository**
+2. **Setup Python environment**
+3. **Start PostgreSQL service container**
+4. **Apply database schema (`setup.sql`)**
+5. **Run the crawler script (`main.py`)**
+6. **Export database contents to CSV (`repos_dump.csv`)**
+7. **Upload CSV as an artifact** for later download or inspection
 
 ---
 
 ### Trigger Options
 
-- **Manual:** From GitHub → **Actions tab → “Crawl GitHub Repositories” → Run workflow**  
-- **Automatic:** Scheduled daily at **02:00 UTC** via CRON
+- **Manual:** From GitHub → **Actions tab → “Crawl GitHub Repositories” → Run workflow**
+- **Automatic:** Scheduled daily at **02:00 UTC**
 
 ---
 
@@ -109,6 +112,7 @@ repo_id,full_name,owner,name,stargazers_count,last_crawled,metadata
 MDEwOlJlcG9zaXRvcnkyMzI1Mjk4,torvalds/linux,torvalds,linux,206128,2025-11-02T02:09:10Z,{}
 MDEwOlJlcG9zaXRvcnkxMzI3NTA3MjQ=,codecrafters-io/build-your-own-x,codecrafters-io,build-your-own-x,432517,2025-11-02T02:09:10Z,{}
 ```
+
 # Technologies Used
 
 - Python 3.10
@@ -134,7 +138,8 @@ MDEwOlJlcG9zaXRvcnkxMzI3NTA3MjQ=,codecrafters-io/build-your-own-x,codecrafters-i
 │ └── setup.sql # DB schema
 ├── .github/
 │ └── workflows/
-│ └── crawl.yml
+│   └── crawl.yml
+├── .env.example
 ├── requirements.txt
 └── README.md
 
@@ -144,21 +149,24 @@ MDEwOlJlcG9zaXRvcnkxMzI3NTA3MjQ=,codecrafters-io/build-your-own-x,codecrafters-i
 
 1. Extend to Pull Requests, Issues & Comments
    Add new tables:
+
    ```sql
    CREATE TABLE pull_requests (pr_id TEXT PRIMARY KEY, repo_id TEXT, metadata JSONB, last_updated TIMESTAMP);
    CREATE TABLE issues (issue_id TEXT PRIMARY KEY, repo_id TEXT, metadata JSONB, last_updated TIMESTAMP);
    CREATE TABLE comments (comment_id TEXT PRIMARY KEY, pr_id TEXT, metadata JSONB, last_updated TIMESTAMP);
    Use last_updated for incremental updates.
 
+   ```
+
 2. Scale for 500M+ Repositories
 
-  - Shard repositories across multiple workers
-  - Use message queues (e.g., Kafka) between crawler and database
-  - Store cold data in S3/Parquet, hot data in Postgres
-  - Rotate tokens for distributed rate-limit management
+- Shard repositories across multiple workers
+- Use message queues (e.g., Kafka) between crawler and database
+- Store cold data in S3/Parquet, hot data in Postgres
+- Rotate tokens for distributed rate-limit management
 
 3. Monitoring & Reliability
 
-  - Add detailed logs & metrics
-  - Slack/email notifications for job status
-  - Add checkpoints to resume interrupted crawls
+- Add detailed logs & metrics
+- Slack/email notifications for job status
+- Add checkpoints to resume interrupted crawls

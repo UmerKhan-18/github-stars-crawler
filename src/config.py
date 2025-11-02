@@ -25,3 +25,5 @@ DATABASE_URL = os.getenv(
 SLEEP_BETWEEN_PAGES = float(os.getenv("SLEEP_BETWEEN_PAGES", 1.0))
 OUTPUT_CSV = os.getenv("OUTPUT_CSV", "output/repos_dump.csv")
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+THREAD_COUNT = int(os.getenv("THREAD_COUNT", 5))  # default: 5 parallel threads
+

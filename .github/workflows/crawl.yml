@@ -59,6 +59,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MAX_REPOS: 1000 # override for demo or set to 100000 for full run
           PAGE_SIZE: 100
+          THREAD_COUNT: 5
           OUTPUT_CSV: output/repos_dump.csv
         run: |
           python main.py

@@ -91,8 +91,6 @@ The entire pipeline runs automatically using the workflow file:
   INSERT INTO public.repos (repo_id, full_name, owner, name, stargazers_count, last_crawled, metadata)
   VALUES ('MDEwOlJlcG9zaXRvcnkyMzI1Mjk4', 'torvalds/linux', 'torvalds', 'linux', 206128, '2025-11-02 02:09:10+00', '{}');
 
-  --- 
-
 # Technologies Used
 
 - Python 3.10
@@ -114,11 +112,13 @@ The entire pipeline runs automatically using the workflow file:
 ├── requirements.txt
 └── README.md
 
+```
+
 # Future Improvements
 
 1. Extend to Pull Requests, Issues & Comments
    Add new tables:
-   sql
+   ```sql
    CREATE TABLE pull_requests (pr_id TEXT PRIMARY KEY, repo_id TEXT, metadata JSONB, last_updated TIMESTAMP);
    CREATE TABLE issues (issue_id TEXT PRIMARY KEY, repo_id TEXT, metadata JSONB, last_updated TIMESTAMP);
    CREATE TABLE comments (comment_id TEXT PRIMARY KEY, pr_id TEXT, metadata JSONB, last_updated TIMESTAMP);

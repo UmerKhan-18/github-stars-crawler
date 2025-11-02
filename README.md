@@ -90,6 +90,7 @@ The entire pipeline runs automatically using the workflow file:
   ```sql
   INSERT INTO public.repos (repo_id, full_name, owner, name, stargazers_count, last_crawled, metadata)
   VALUES ('MDEwOlJlcG9zaXRvcnkyMzI1Mjk4', 'torvalds/linux', 'torvalds', 'linux', 206128, '2025-11-02 02:09:10+00', '{}');
+```
 
 # Technologies Used
 
@@ -126,7 +127,7 @@ The entire pipeline runs automatically using the workflow file:
 
 2. Scale for 500M+ Repositories
 
-  - Shared repositories across multiple workers
+  - Shard repositories across multiple workers
   - Use message queues (e.g., Kafka) between crawler and database
   - Store cold data in S3/Parquet, hot data in Postgres
   - Rotate tokens for distributed rate-limit management

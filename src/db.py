@@ -14,11 +14,12 @@ class Repo(Base):
     name = Column(String, nullable=False)
     stargazers_count = Column(BigInteger)
     last_crawled = Column(TIMESTAMP, default=datetime.utcnow)
-    metadata_json = Column("metadata", JSON, default={})  # ✅ renamed here
+    metadata_json = Column("metadata", JSON, default={})
 
 DATABASE_URL = f"postgresql://{os.getenv('PGUSER', 'postgres')}:{os.getenv('PGPASSWORD', 'postgres')}@{os.getenv('PGHOST', 'localhost')}/{os.getenv('PGDATABASE', 'crawler')}"
+
 engine = create_engine(DATABASE_URL)
-Session = sessionmaker(bind=engine)
+SessionLocal = sessionmaker(bind=engine)  
 
 def create_schema():
     Base.metadata.create_all(engine)
